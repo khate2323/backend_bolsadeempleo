@@ -169,3 +169,72 @@ export async function deleteOffert(id) {
     client.release();
   }
 }
+
+//! Applications to offerts
+
+export async function isOffertValidForApplication(id) {
+  const client = await getConnect();
+  try {
+    const resClient = await client.query(
+      `SELECT id FROM tbl_offerts 
+       WHERE id = $1 
+         AND is_active = 1 
+         AND (expires_at IS NULL OR expires_at > NOW())`,
+      [id]
+    );
+
+    return resClient.rowCount > 0;
+  } catch (error) {
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+export async function hasUserApplied(userId, offertId) {
+  const client = await getConnect();
+  try {
+    const resClient = await client.query(
+      `SELECT id FROM tbl_applications WHERE user_id = $1 AND offert_id = $2`,
+      [userId, offertId]
+    );
+
+    return resClient.rowCount > 0;
+  } catch (error) {
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+export async function applyToOffert(userId, offertId) {
+  const client = await getConnect();
+  try {
+    const resClient = await client.query(
+      `INSERT INTO tbl_applications (user_id, offert_id) VALUES ($1, $2) RETURNING *`,
+      [userId, offertId]
+    );
+
+    return resClient.rows;
+  } catch (error) {
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+export async function changeStatusToApplicationOffert(id, newStatus) {
+  const client = await getConnect();
+  try {
+    const resClient = await client.query(
+      `UPDATE tbl_applications SET status = $1 WHERE id = $2 RETURNING *`,
+      [newStatus, id]
+    );
+
+    return resClient.rows;
+  } catch (error) {
+    throw error;
+  } finally {
+    client.release();
+  }
+}

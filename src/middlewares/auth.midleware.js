@@ -5,7 +5,7 @@ import { forbiddenRes, unauthorizedRes } from "../handlers/response.handler.js";
 export function authMiddleware(req, res, next) {
   const authHeader = req.headers["authorization"];
 
-  const token = authHeader && authHeader.split(" ")[1]; // Bearer <token>
+  const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) return unauthorizedRes(res, ["Token no proporcionado"]);
 
@@ -15,8 +15,6 @@ export function authMiddleware(req, res, next) {
     req.userId = payload.userId;
     next();
   } catch (error) {
-    console.log(error);
-
     if (error?.message === "invalid signature")
       return unauthorizedRes(res, ["Token inválido"]);
 

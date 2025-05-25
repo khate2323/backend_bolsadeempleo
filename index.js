@@ -24,8 +24,8 @@ app.use(cookieParser());
 app.disable("x-powered-by");
 
 // config routes api
-app.use("/api/users/", routesUser);
 app.use("/api/auth/", routesAuth);
+app.use("/api/users/", routesUser);
 app.use("/api/offerts/", routesOffert);
 
 app.listen(PORT, () => {

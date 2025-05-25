@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  applyToOffertCtrl,
   createOffertCtrl,
   getAllOffertsCtrl,
 } from "../controllers/offert.controller.js";
@@ -11,8 +12,14 @@ routesOffert.get("/get-all", authMiddleware, getAllOffertsCtrl);
 routesOffert.post(
   "/create-offert",
   authMiddleware,
-  verifyRolesAccept(["EMPRESA", 'ADMINISTRADOR']),
+  verifyRolesAccept(["EMPRESA"]),
   createOffertCtrl
+);
+routesOffert.post(
+  "/apply-to-offert",
+  authMiddleware,
+  verifyRolesAccept(["EGRESADO"]),
+  applyToOffertCtrl
 );
 
 export { routesOffert };

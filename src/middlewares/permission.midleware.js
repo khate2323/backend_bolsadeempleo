@@ -1,14 +1,15 @@
 import { forbiddenRes } from "../handlers/response.handler.js";
-import { getRoleById } from "../services/role.service.js";
+import { getUserById } from "../services/user.service.js";
 
 export function verifyRolesAccept(roles = []) {
   return async function (req, res, next) {
     const { userId } = req;
 
-    const role = await getRoleById(userId);
-    if (role.length === 0) return forbiddenRes(res, "No autorizado");
+    const user = await getUserById(userId);
 
-    if (!roles.includes(role[0].name))
+    if (user.length === 0) return forbiddenRes(res, "No autorizado");
+
+    if (!roles.includes(user[0].role_name))
       return forbiddenRes(res, "No autorizado");
 
     next();

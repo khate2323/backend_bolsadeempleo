@@ -39,8 +39,7 @@ export async function loginCtrl(req, res) {
     if (errors.length > 0) return badRequestRes(res, errors);
 
     const user = await getUserByLogin(login);
-    if (user.length === 0)
-      return unauthorizedRes(res, "Usuario o contraseña incorrectos");
+    if (!user) return unauthorizedRes(res, "Usuario o contraseña incorrectos");
 
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword)
@@ -71,7 +70,7 @@ export async function loginCtrl(req, res) {
     await saveRefreshToken(user.id, refreshToken, expiresAt);
 
     delete user.password;
-    return successRes(res, { user, accessToken, refreshToken });
+    return successRes(res, { user: user, accessToken, refreshToken });
   } catch (error) {
     console.error("error exec loginCtrl=>", error.message);
     const { code, message } = handleDbError(error);
@@ -115,6 +114,7 @@ export async function registerUserCtrl(req, res) {
     const errors = validateFieldsRequired(requiredFields, req.body, labels);
 
     if (errors.length > 0) return badRequestRes(res, errors);
+
     if (!isEmail(email))
       return badRequestRes(res, ["El correo proporcionado no es válido"]);
 
@@ -130,7 +130,7 @@ export async function registerUserCtrl(req, res) {
     };
 
     const user = await createUser(dataToSave);
-    if (user.length > 0) {
+    if (user) {
       const codeVerification = generateCodeWithExpiration();
 
       await createCode({

@@ -29,15 +29,15 @@ import {
 
 export async function loginCtrl(req, res) {
   try {
-    const { login = null, password = null } = req.body;
-
+    
     const requiredFields = ["login", "password"];
     const labels = { login: "Usuario", password: "Contraseña" };
-
+    
     const errors = validateFieldsRequired(requiredFields, req.body, labels);
-
+    
     if (errors.length > 0) return badRequestRes(res, errors);
-
+    
+    const { login = null, password = null } = req.body;
     const user = await getUserByLogin(login);
     if (!user) return unauthorizedRes(res, "Usuario o contraseña incorrectos");
 

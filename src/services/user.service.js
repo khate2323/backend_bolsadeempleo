@@ -49,7 +49,9 @@ export async function createUser(userData) {
       password,
     } = userData;
     const resClient = await client.query(
-      `INSERT INTO tbl_users (full_name, identification, red_id, role_id, email, login, password) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+      `INSERT INTO tbl_users 
+      (full_name, identification, red_id, role_id, email, login, password)
+      VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
       [full_name, identification, red_id, role_id, email, login, password]
     );
     return resClient.rows[0];

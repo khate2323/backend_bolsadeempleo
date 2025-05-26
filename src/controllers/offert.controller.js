@@ -39,8 +39,7 @@ export async function createOffertCtrl(req, res) {
       "currency",
       "vacancies",
       "requirements",
-      "responsibilities",
-      "is_external",
+      "responsibilities"
     ];
     const labels = {
       title: "Titulo",
@@ -53,8 +52,7 @@ export async function createOffertCtrl(req, res) {
       currency: "Tipo de moneda",
       vacancies: "Número de vacantes",
       requirements: "Requisitos",
-      responsibilities: "Responsabilidades",
-      is_external: "Propiedad de la oferta",
+      responsibilities: "Responsabilidades"
     };
 
     const errors = validateFieldsRequired(requiredFields, req.body, labels);

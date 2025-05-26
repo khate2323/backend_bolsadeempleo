@@ -3,11 +3,7 @@ export function isEmail(email) {
   return regex.test(email);
 }
 
-export function isNumber(email) {
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regex.test(email);
-}
-
+// validar campos requeridos
 export function validateFieldsRequired(fields, body, labels = {}) {
   const errors = [];
 

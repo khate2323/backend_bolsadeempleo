@@ -54,7 +54,7 @@ export async function createUser(userData) {
       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
       [full_name, identification, red_id, role_id, email, login, password]
     );
-    return resClient.rows[0];
+    return resClient.rows;
   } catch (error) {
     throw error;
   } finally {

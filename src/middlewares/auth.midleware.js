@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { ACCESS_TOKEN_SECRET } from "../config/envConfig.config.js";
-import { forbiddenRes, unauthorizedRes } from "../handlers/response.handler.js";
+import { unauthorizedRes } from "../handlers/response.handler.js";
 
 export function authMiddleware(req, res, next) {
   const authHeader = req.headers["authorization"];
@@ -19,7 +19,7 @@ export function authMiddleware(req, res, next) {
       return unauthorizedRes(res, ["Token inválido"]);
 
     if (error?.message === "jwt expired")
-      return forbiddenRes(res, ["Sessión caducada"]);
+      return unauthorizedRes(res, ["Sessión caducada"]);
 
     return unauthorizedRes(res, ["Token no proporcionado"]);
   }

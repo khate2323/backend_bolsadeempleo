@@ -12,6 +12,7 @@ export function verifyRolesAccept(roles = []) {
     if (!roles.includes(user[0].role_name))
       return forbiddenRes(res, "No autorizado");
 
+    req.user = user[0];
     next();
   };
 }

@@ -7,6 +7,15 @@ export function successRes(res, data) {
   });
 }
 
+export function successEmptyRes(res, data) {
+  res.status(202).json({
+    status: 202,
+    message: "Success Empty",
+    next: true,
+    data: data,
+  });
+}
+
 export function badRequestRes(res, errors = []) {
   res.status(400).json({
     status: 400,

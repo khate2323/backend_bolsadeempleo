@@ -14,6 +14,21 @@ export async function getAllOfferts() {
   }
 }
 
+export async function getAllOffertsByCompanyId(company_id, is_active = 1) {
+  const client = await getConnect();
+  try {
+    const resClient = await client.query(
+      "SELECT * FROM tbl_offerts WHERE company_id = $1 and is_active = $2",
+      [company_id, is_active]
+    );
+    return resClient.rows;
+  } catch (error) {
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
 export async function getOffertById(id) {
   const client = await getConnect();
   try {

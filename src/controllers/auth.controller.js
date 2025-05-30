@@ -29,21 +29,29 @@ import {
 
 export async function loginCtrl(req, res) {
   try {
-    
     const requiredFields = ["login", "password"];
     const labels = { login: "Usuario", password: "Contraseña" };
-    
+
     const errors = validateFieldsRequired(requiredFields, req.body, labels);
-    
+
     if (errors.length > 0) return badRequestRes(res, errors);
-    
-    const { login = null, password = null } = req.body;
+
+    const { login = null, password = null, type = 3 } = req.body;
     const user = await getUserByLogin(login);
     if (!user) return unauthorizedRes(res, "Usuario o contraseña incorrectos");
 
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword)
       return unauthorizedRes(res, "Usuario o contraseña incorrectos");
+
+    if (user.role_name !== "ADMINISTRADOR") {
+      if (user.role_name === "EMPRESA" && type !== 2) {
+        return badRequestRes(res, ["Ingrese con un rol correspodniente"]);
+      }
+      if (user.role_name === "EGRESADO" && type !== 3) {
+        return badRequestRes(res, ["Ingrese con un rol correspodniente"]);
+      }
+    }
 
     if (user.is_active === 0) return unauthorizedRes(res, "Usuario inactivo");
     // if (user.is_verified === 0)

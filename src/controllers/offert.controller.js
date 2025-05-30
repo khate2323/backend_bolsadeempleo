@@ -2,6 +2,7 @@ import {
   applyToOffert,
   createOffert,
   getAllOfferts,
+  getAllOffertsByCompanyId,
   hasUserApplied,
   isOffertValidForApplication,
 } from "../services/offert.service.js";
@@ -26,6 +27,44 @@ export async function getAllOffertsCtrl(req, res) {
   }
 }
 
+export async function getAllOffertsByCompanyIdCtrl(req, res) {
+  try {
+    const { companyId, isActive = 1 } = req.query;
+    if (!companyId) {
+      badRequestRes(res, [
+        "No se ha proporcionado el id de la Empresa para consultar sus ofertas",
+      ]);
+    }
+    const offerts = await getAllOffertsByCompanyId(companyId, isActive);
+
+    return successRes(res, offerts);
+  } catch (error) {
+    const { code, message } = handleDbError(error);
+    if (code === 400) return badRequestRes(res, [message]);
+
+    return serverErrorRes(res);
+  }
+}
+
+export async function getAllOffertsByIdCtrl(req, res) {
+  try {
+    const { companyId } = req.query;
+    if (!companyId) {
+      badRequestRes(res, [
+        "No se ha proporcionado el id de la Empresa para consultar sus ofertas",
+      ]);
+    }
+    const offerts = await getOffertById(companyId);
+
+    return successRes(res, offerts);
+  } catch (error) {
+    const { code, message } = handleDbError(error);
+    if (code === 400) return badRequestRes(res, [message]);
+
+    return serverErrorRes(res);
+  }
+}
+
 export async function createOffertCtrl(req, res) {
   try {
     const requiredFields = [
@@ -39,7 +78,7 @@ export async function createOffertCtrl(req, res) {
       "currency",
       "vacancies",
       "requirements",
-      "responsibilities"
+      "responsibilities",
     ];
     const labels = {
       title: "Titulo",
@@ -52,7 +91,7 @@ export async function createOffertCtrl(req, res) {
       currency: "Tipo de moneda",
       vacancies: "Número de vacantes",
       requirements: "Requisitos",
-      responsibilities: "Responsabilidades"
+      responsibilities: "Responsabilidades",
     };
 
     const errors = validateFieldsRequired(requiredFields, req.body, labels);
@@ -86,8 +125,7 @@ export async function applyToOffertCtrl(req, res) {
     if (errors.length > 0) return badRequestRes(res, errors);
 
     const offertIsValid = await isOffertValidForApplication(offertId);
-    console.log("offertIsValid", offertIsValid);
-    
+
     if (!offertIsValid)
       return badRequestRes(res, [
         "La oferta se encuentra inactiva o expiro el tiempo hábil de postulación",

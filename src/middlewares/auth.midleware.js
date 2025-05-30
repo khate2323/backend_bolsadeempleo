@@ -12,7 +12,6 @@ export function authMiddleware(req, res, next) {
   try {
     const payload = jwt.verify(token, ACCESS_TOKEN_SECRET);
     req.userId = payload.userId;
-    req.userId = payload.userId;
     next();
   } catch (error) {
     if (error?.message === "invalid signature")

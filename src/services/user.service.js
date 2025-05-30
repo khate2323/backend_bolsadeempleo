@@ -115,8 +115,11 @@ export async function getUserByLogin(login) {
   const client = await getConnect();
   try {
     const resClient = await client.query(
-      `SELECT * FROM tbl_users WHERE login = $1`,
-      [login]
+      `SELECT us.*, rl.name AS role_name
+       FROM tbl_users AS us
+       LEFT JOIN tbl_roles AS rl ON us.role_id = rl.id
+       WHERE us.login = $1 AND us.is_active = $2`,
+      [login, 1]
     );
 
     return resClient.rows[0];

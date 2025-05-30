@@ -78,6 +78,15 @@ export function handleDbError(error) {
       };
     }
 
+    case "22007":{
+
+      return {
+        code: 400,
+        message:
+          `El formato de algunos campos posiblemente relacionados con fechas no son inválidos.`,
+      };
+    }
+
     default:
       return {
         code: 500,
